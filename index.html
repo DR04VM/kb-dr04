@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base de connaissances — DR04 Differdange</title>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F0EDE6;
+  --card: #FDFCF9;
+  --sidebar: #162B44;
+  --sidebar-hover: #1E3A57;
+  --sidebar-active: #243F60;
+  --accent: #C49A38;
+  --accent-dim: #8B6B26;
+  --border: #DDD8CE;
+  --border-light: #EDEAE4;
+  --text: #1A1917;
+  --text-muted: #6B6560;
+  --text-light: #9B9590;
+  --info-bg: #EBF4FB; --info-bd: #2874A6; --info-tx: #1A4B72;
+  --warn-bg: #FEF9EC; --warn-bd: #C49A38; --warn-tx: #7A5E1A;
+  --flag-bg: #FEF0F0; --flag-bd: #C00000; --flag-tx: #8B0000;
+  --ok-bg:   #EEF8F2; --ok-bd:   #2D7A4F; --ok-tx:   #1A5234;
+  --type-procedure: #162B44;
+  --type-reference: #2D7A4F;
+  --type-knowhow:   #6B3FA0;
+  --type-stub:      #9B9590;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,.12);
+}
+
+[data-theme="dark"] {
+  --bg: #0F1117;
+  --card: #181C24;
+  --sidebar: #0B0F16;
+  --sidebar-hover: #151B27;
+  --sidebar-active: #1A2335;
+  --accent: #D4A843;
+  --accent-dim: #A07A28;
+  --border: #2A2F3D;
+  --border-light: #222632;
+  --text: #E8E4DC;
+  --text-muted: #8C8880;
+  --text-light: #5C5850;
+  --info-bg: #0D1F30; --info-bd: #2874A6; --info-tx: #7EC3F0;
+  --warn-bg: #1E1800; --warn-bd: #C49A38; --warn-tx: #E8C46A;
+  --flag-bg: #1E0808; --flag-bd: #C00000; --flag-tx: #F08080;
+  --ok-bg:   #0A1F14; --ok-bd:   #2D7A4F; --ok-tx:   #6FCF97;
+  --type-procedure: #7EB3E8;
+  --type-reference: #6FCF97;
+  --type-knowhow:   #C4A0F0;
+  --type-stub:      #5C5850;
+  --shadow: 0 1px 3px rgba(0,0,0,.3), 0 4px 12px rgba(0,0,0,.2);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,.5);
+}
+
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; overflow: hidden; height: 100vh; font-size: 14px; }
+
+/* ── SIDEBAR ── */
+.sidebar { width: 232px; min-width: 232px; background: var(--sidebar); display: flex; flex-direction: column; height: 100vh; overflow-y: auto; }
+.sidebar-logo { padding: 22px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.sidebar-logo h1 { font-family: 'Spectral', serif; font-size: 16px; font-weight: 700; color: #fff; line-height: 1.3; }
+.sidebar-logo p  { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 3px; letter-spacing: .03em; }
+.sidebar-logo .badge { display: inline-block; background: var(--accent); color: #fff; font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 10px; letter-spacing: .06em; margin-top: 6px; text-transform: uppercase; }
+
+.sidebar-search { padding: 12px 14px; }
+.sidebar-search input { width: 100%; background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 7px 10px 7px 30px; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,.4)' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 9px center; }
+.sidebar-search input::placeholder { color: rgba(255,255,255,.35); }
+.sidebar-search input:focus { border-color: var(--accent); background-color: rgba(255,255,255,.13); }
+
+.sidebar-section { padding: 6px 0; }
+.sidebar-section-title { font-size: 10px; font-weight: 600; color: rgba(255,255,255,.35); letter-spacing: .1em; text-transform: uppercase; padding: 8px 20px 4px; }
+.cat-item { display: flex; align-items: center; gap: 9px; padding: 7px 20px; cursor: pointer; transition: background .15s; font-size: 13px; color: rgba(255,255,255,.65); border-left: 2px solid transparent; }
+.cat-item:hover { background: var(--sidebar-hover); color: rgba(255,255,255,.9); }
+.cat-item.active { background: var(--sidebar-active); color: #fff; border-left-color: var(--accent); }
+.cat-item .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cat-item .cat-count { margin-left: auto; font-size: 11px; background: rgba(255,255,255,.1); border-radius: 10px; padding: 1px 7px; color: rgba(255,255,255,.5); }
+.cat-item.active .cat-count { background: rgba(255,255,255,.18); color: rgba(255,255,255,.8); }
+
+.sidebar-footer { margin-top: auto; padding: 14px 20px; border-top: 1px solid rgba(255,255,255,.08); }
+.sidebar-footer button { width: 100%; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.65); padding: 8px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all .15s; }
+.sidebar-footer button:hover { background: rgba(255,255,255,.13); color: #fff; }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.topbar-title { font-family: 'Spectral', serif; font-size: 17px; font-weight: 600; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); color: var(--text-muted); background: var(--bg); transition: all .15s; white-space: nowrap; }
+.chip:hover { border-color: var(--accent); color: var(--text); }
+.chip.active { border-color: var(--type-procedure); color: var(--type-procedure); background: #EBF0F8; }
+.chip.active.ref   { border-color: var(--type-reference); color: var(--type-reference); background: #EEF8F2; }
+.chip.active.know  { border-color: var(--type-knowhow);   color: var(--type-knowhow);   background: #F3EEF8; }
+.chip.active.stub  { border-color: var(--type-stub);       color: var(--type-stub);       background: var(--bg); }
+.chip.active.all   { border-color: var(--sidebar); color: var(--sidebar); background: #EDF0F5; }
+.btn { padding: 7px 14px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all .15s; border: none; }
+.btn-primary { background: var(--sidebar); color: #fff; }
+.btn-primary:hover { background: #1E3A57; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-ghost { background: transparent; border: 1.5px solid var(--border); color: var(--text-muted); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--text); }
+
+/* ── CONTENT AREA ── */
+.content-area { flex: 1; display: flex; overflow: hidden; }
+
+/* ── ENTRY LIST ── */
+.entry-list { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.entry-list.panel-open { max-width: 420px; min-width: 320px; border-right: 1px solid var(--border); }
+
+.entry-card { background: var(--card); border: 1.5px solid var(--border-light); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; transition: all .15s; position: relative; }
+.entry-card:hover { border-color: var(--border); box-shadow: var(--shadow); transform: translateY(-1px); }
+.entry-card.selected { border-color: #2874A6; box-shadow: 0 0 0 3px rgba(40,116,166,.1); }
+.entry-card.stub { opacity: .72; border-style: dashed; }
+.entry-card.stub:hover { opacity: 1; }
+
+.card-header { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.card-title { font-weight: 600; font-size: 14px; line-height: 1.3; flex: 1; }
+.card-title mark { background: #FFF176; border-radius: 2px; padding: 0 1px; }
+.card-badges { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
+.badge { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; letter-spacing: .02em; }
+.badge-type-procedure { background: rgba(40,116,166,.12); color: var(--type-procedure); }
+.badge-type-reference  { background: rgba(45,122,79,.12);  color: var(--type-reference); }
+.badge-type-knowhow    { background: rgba(107,63,160,.12); color: var(--type-knowhow); }
+.badge-type-stub       { background: var(--bg); color: var(--type-stub); border: 1px solid var(--border); }
+.badge-status-validated { background: var(--ok-bg); color: var(--ok-tx); }
+.badge-status-draft     { background: var(--warn-bg); color: var(--warn-tx); }
+.badge-status-to-clarify { background: var(--flag-bg); color: var(--flag-tx); }
+.badge-status-stub      { background: var(--bg); color: var(--text-light); }
+.card-summary { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+.card-meta { margin-top: 8px; font-size: 11px; color: var(--text-light); display: flex; gap: 10px; }
+.cat-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-light); }
+.cat-pip { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+
+.stub-label { font-size: 12px; color: var(--text-light); font-style: italic; }
+
+/* ── ENTRY DETAIL ── */
+.entry-detail { flex: 1; overflow-y: auto; background: var(--card); border-left: 1px solid var(--border); animation: slideIn .2s ease; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
+
+.detail-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--card); z-index: 1; }
+.detail-header-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+.detail-title { font-family: 'Spectral', serif; font-size: 22px; font-weight: 700; line-height: 1.2; flex: 1; }
+.detail-close { background: none; border: none; cursor: pointer; padding: 4px; color: var(--text-muted); font-size: 18px; line-height: 1; border-radius: 4px; flex-shrink: 0; }
+.detail-close:hover { background: var(--bg); color: var(--text); }
+.detail-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.detail-body { padding: 20px 24px; }
+
+.meta-item { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.meta-sep { color: var(--border); }
+.detail-actions { display: flex; gap: 8px; padding: 0 24px 16px; }
+
+/* ── CONTENT BLOCKS ── */
+.section-heading { font-family: 'Spectral', serif; font-size: 16px; font-weight: 600; color: var(--text); margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 1.5px solid var(--border); }
+.section-heading:first-child { margin-top: 0; }
+
+.block { margin-bottom: 12px; }
+.block-text { font-size: 13.5px; line-height: 1.65; color: var(--text); }
+.block-steps { counter-reset: steps; list-style: none; }
+.block-steps li { counter-increment: steps; display: flex; gap: 10px; margin-bottom: 8px; font-size: 13.5px; line-height: 1.6; }
+.block-steps li::before { content: counter(steps); background: var(--sidebar); color: #fff; border-radius: 50%; width: 20px; height: 20px; min-width: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; margin-top: 2px; }
+.block-bullets { list-style: none; }
+.block-bullets li { padding-left: 16px; position: relative; margin-bottom: 5px; font-size: 13.5px; line-height: 1.6; }
+.block-bullets li::before { content: '•'; position: absolute; left: 0; color: var(--accent-dim); font-weight: 700; }
+
+.box { border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; border-left: 3px solid; }
+.box-title { font-weight: 600; font-size: 12px; letter-spacing: .02em; margin-bottom: 6px; text-transform: uppercase; }
+.box-item { font-size: 13px; line-height: 1.6; margin-bottom: 3px; }
+.box.info  { background: var(--info-bg); border-color: var(--info-bd); color: var(--info-tx); }
+.box.warn  { background: var(--warn-bg); border-color: var(--warn-bd); color: var(--warn-tx); }
+.box.flag  { background: var(--flag-bg); border-color: var(--flag-bd); color: var(--flag-tx); }
+.box.ok    { background: var(--ok-bg);   border-color: var(--ok-bd);   color: var(--ok-tx); }
+
+.block-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 4px; }
+.block-table th { background: rgba(40,116,166,.12); color: var(--type-procedure); font-weight: 600; text-align: left; padding: 7px 10px; border: 1px solid var(--border); font-size: 12px; }
+.block-table td { padding: 7px 10px; border: 1px solid var(--border-light); line-height: 1.4; vertical-align: top; }
+.block-table tr:nth-child(even) td { background: var(--bg); }
+
+.block-link a { display: inline-flex; align-items: center; gap: 5px; color: var(--info-bd); font-size: 13px; text-decoration: none; border-bottom: 1px solid rgba(40,116,166,.3); transition: border-color .15s; font-family: 'JetBrains Mono', monospace; font-size: 12px; word-break: break-all; }
+.block-link a:hover { border-color: var(--info-bd); }
+.block-link a::before { content: '→'; font-family: 'DM Sans', sans-serif; font-size: 14px; flex-shrink: 0; }
+
+.stub-placeholder { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+.stub-placeholder .stub-icon { font-size: 40px; margin-bottom: 12px; }
+.stub-placeholder h3 { font-family: 'Spectral', serif; font-size: 18px; color: var(--text); margin-bottom: 8px; }
+.stub-placeholder p { font-size: 13px; line-height: 1.6; max-width: 320px; margin: 0 auto 16px; }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 100; display: flex; align-items: center; justify-content: center; animation: fadeIn .15s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { background: var(--card); border-radius: 10px; width: 560px; max-width: 95vw; max-height: 88vh; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); }
+.modal-header { padding: 18px 20px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.modal-header h2 { font-family: 'Spectral', serif; font-size: 18px; font-weight: 600; flex: 1; }
+.modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+.modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+
+.form-row { margin-bottom: 14px; }
+.form-row label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .04em; }
+.form-row input, .form-row select, .form-row textarea { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: 6px; padding: 8px 10px; font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: var(--text); outline: none; transition: border-color .15s; }
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--info-bd); background: #fff; }
+.form-row textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+.form-row.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-hint { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+
+/* ── EMPTY STATE ── */
+.empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px; text-align: center; color: var(--text-muted); }
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 14px; opacity: .5; }
+.empty-state h3 { font-family: 'Spectral', serif; font-size: 20px; color: var(--text); margin-bottom: 8px; }
+.empty-state p { font-size: 13px; line-height: 1.6; max-width: 300px; }
+
+/* ── COUNT BAR ── */
+.count-bar { padding: 8px 16px; background: var(--bg); border-bottom: 1px solid var(--border-light); font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.count-bar strong { color: var(--text); }
+
+/* ── SCROLLBARS ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #C5BFB5; }
+
+/* ── MOBILE HAMBURGER BUTTON ── */
+.hamburger { display: none; background: none; border: none; cursor: pointer; padding: 6px; color: var(--text-muted); border-radius: 6px; }
+.hamburger:hover { background: var(--bg); }
+.hamburger svg { display: block; }
+
+/* ── MOBILE DRAWER OVERLAY ── */
+.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; }
+.drawer-overlay.open { display: block; }
+
+/* ── MOBILE BACK BUTTON (detail panel) ── */
+.mobile-back { display: none; align-items: center; gap: 8px; padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; color: var(--text-muted); font-weight: 500; }
+.mobile-back:hover { color: var(--text); }
+.mobile-back svg { flex-shrink: 0; }
+
+/* ── DESKTOP: everything as before ── */
+@media (min-width: 641px) {
+  body { overflow: hidden; height: 100vh; }
+  .entry-list.panel-open { max-width: 420px; min-width: 320px; border-right: 1px solid var(--border); }
+  .filter-chips { display: flex; }
+  .count-bar { flex-wrap: wrap; }
+}
+
+/* ── TABLET (641–900px): sidebar collapses ── */
+@media (max-width: 900px) and (min-width: 641px) {
+  .sidebar { position: fixed; left: -240px; top: 0; bottom: 0; z-index: 210; transition: left .25s ease; box-shadow: none; }
+  .sidebar.open { left: 0; box-shadow: var(--shadow-lg); }
+  .hamburger { display: flex; }
+  .entry-list.panel-open { max-width: 380px; min-width: 280px; }
+  .filter-chips { display: none; }
+}
+
+/* ── MOBILE (≤640px): full rethink ── */
+@media (max-width: 640px) {
+  body { display: block; height: auto; overflow: auto; }
+
+  /* Sidebar becomes full-height drawer */
+  .sidebar {
+    position: fixed; left: -100vw; top: 0; bottom: 0; width: 82vw; max-width: 300px;
+    z-index: 210; transition: left .25s ease; height: 100dvh;
+  }
+  .sidebar.open { left: 0; box-shadow: var(--shadow-lg); }
+  .hamburger { display: flex; }
+
+  /* Main fills viewport */
+  .main { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Topbar: compact */
+  .topbar { padding: 10px 12px; gap: 8px; }
+  .topbar-title { font-size: 15px; }
+  .filter-chips { display: none; }
+  .btn-primary.btn-sm { padding: 8px 10px; font-size: 12px; white-space: nowrap; }
+
+  /* Count bar: horizontal scroll */
+  .count-bar {
+    overflow-x: auto; white-space: nowrap; flex-wrap: nowrap;
+    padding: 6px 12px; gap: 4px; scrollbar-width: none;
+  }
+  .count-bar::-webkit-scrollbar { display: none; }
+  .status-chip { flex-shrink: 0; padding: 4px 10px; font-size: 12px; min-height: 32px; }
+
+  /* Content area: stacked, full height */
+  .content-area { flex: 1; overflow: hidden; position: relative; }
+
+  /* Entry list: full width always */
+  .entry-list { padding: 10px; gap: 6px; }
+  .entry-list.panel-open { max-width: 100%; min-width: 0; border-right: none; }
+
+  /* Card touch targets */
+  .entry-card { padding: 12px 14px; min-height: 44px; }
+  .card-title { font-size: 14px; }
+
+  /* Detail: full-screen slide-over */
+  .entry-detail {
+    position: fixed; inset: 0; z-index: 150;
+    border-left: none;
+    animation: slideUp .2s ease;
+    display: flex; flex-direction: column;
+  }
+  @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  /* When detail is open, hide the list underneath */
+  .content-area.detail-open .entry-list { visibility: hidden; }
+
+  /* Show back button on mobile */
+  .mobile-back { display: flex; }
+
+  /* Detail header adjustments */
+  .detail-header { padding: 14px 16px 12px; }
+  .detail-title { font-size: 18px; }
+  .detail-body { padding: 14px 16px; }
+  .detail-actions { padding: 0 16px 12px; }
+
+  /* Forms: single column */
+  .form-row.two-col { grid-template-columns: 1fr; }
+
+  /* Modals: full bottom sheet on mobile */
+  .modal-overlay { align-items: flex-end; }
+  .modal, .rpg-modal {
+    width: 100%; max-width: 100%; border-radius: 16px 16px 0 0;
+    max-height: 92dvh; animation: slideUp .2s ease;
+  }
+
+  /* RPG stats: 2×2 grid on small screens */
+  .rpg-stats { grid-template-columns: repeat(2, 1fr); }
+  .rpg-banner { height: 60px; }
+}
+
+/* ── TEAM SIDEBAR ITEMS ── */
+.person-item { display: flex; align-items: center; gap: 9px; padding: 7px 20px; cursor: pointer; transition: background .15s; font-size: 13px; color: rgba(255,255,255,.65); border-left: 2px solid transparent; }
+.person-item:hover { background: var(--sidebar-hover); color: rgba(255,255,255,.9); }
+.person-item.active { background: var(--sidebar-active); color: #fff; border-left-color: var(--accent); }
+.person-avatar { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0; letter-spacing: 0; }
+.person-item .cat-count { margin-left: auto; font-size: 11px; background: rgba(255,255,255,.1); border-radius: 10px; padding: 1px 7px; color: rgba(255,255,255,.5); }
+.person-item.active .cat-count { background: rgba(255,255,255,.18); color: rgba(255,255,255,.8); }
+
+/* ── STATUS FILTER CHIPS in count bar ── */
+.status-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 20px; font-size: 11.5px; font-weight: 500; cursor: pointer; border: 1.5px solid transparent; transition: all .15s; }
+.status-chip:hover { opacity: .8; }
+.status-chip.active-filter { outline: 2px solid currentColor; outline-offset: 1px; }
+
+/* ── RPG PROFILE MODAL ── */
+.rpg-modal { background: var(--card); border-radius: 12px; width: 580px; max-width: 96vw; max-height: 90vh; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); overflow: hidden; }
+.rpg-header { padding: 0; position: relative; overflow: hidden; }
+.rpg-banner { height: 80px; background: linear-gradient(135deg, var(--person-color, #162B44) 0%, color-mix(in srgb, var(--person-color, #162B44) 60%, #000) 100%); }
+.rpg-avatar-wrap { position: absolute; bottom: -28px; left: 24px; }
+.rpg-avatar-lg { width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--card); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; color: #fff; font-family: 'Spectral', serif; }
+.rpg-header-info { padding: 36px 24px 16px; }
+.rpg-name { font-family: 'Spectral', serif; font-size: 22px; font-weight: 700; color: var(--text); }
+.rpg-role { font-size: 12px; color: var(--text-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: .06em; }
+.rpg-body { overflow-y: auto; flex: 1; padding: 0 24px 24px; }
+
+.rpg-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+.rpg-stat { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 8px; text-align: center; }
+.rpg-stat-val { font-family: 'Spectral', serif; font-size: 22px; font-weight: 700; color: var(--text); line-height: 1; }
+.rpg-stat-label { font-size: 10px; color: var(--text-muted); margin-top: 3px; text-transform: uppercase; letter-spacing: .04em; line-height: 1.3; }
+
+.rpg-xp-bar-wrap { margin-bottom: 20px; }
+.rpg-xp-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
+.rpg-xp-track { height: 8px; background: var(--border); border-radius: 10px; overflow: hidden; }
+.rpg-xp-fill { height: 100%; border-radius: 10px; transition: width .8s cubic-bezier(.4,0,.2,1); }
+
+.rpg-entry-group { margin-bottom: 16px; }
+.rpg-group-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.rpg-group-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.rpg-entry-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; cursor: pointer; transition: background .12s; }
+.rpg-entry-row:hover { background: var(--bg); }
+.rpg-entry-row-title { flex: 1; font-size: 13px; color: var(--text); }
+.rpg-entry-row-status { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.rpg-entry-row-type { font-size: 10px; color: var(--text-light); }
+</style>
+</head>
+<body>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <h1>Base de connaissances</h1>
+    <p>Direction régionale 04 · Differdange</p>
+    <span class="badge">Version 1.0</span>
+  </div>
+  <div class="sidebar-search">
+    <input type="text" id="searchInput" placeholder="Rechercher…" autocomplete="off" spellcheck="false">
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Catégories</div>
+    <div id="categoryList"></div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Équipe</div>
+    <div id="teamList"></div>
+  </div>
+  <div class="sidebar-footer">
+    <button id="themeToggle" onclick="toggleTheme()" style="margin-bottom:8px">🌙 Mode sombre</button>
+    <button onclick="openImportExport()">⬍ Exporter / Importer</button>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <span class="topbar-title" id="topbarTitle">Toutes les entrées</span>
+    <div class="filter-chips" id="typeChips"></div>
+    <button class="btn btn-primary btn-sm" onclick="openEdit(null)">+ Nouvelle entrée</button>
+  </div>
+  <div class="count-bar" id="countBar"></div>
+  <div class="mobile-back" id="mobileBack" onclick="closeDetail()" style="display:none">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Retour à la liste
+  </div>
+  <div class="content-area" id="contentArea">
+    <div class="entry-list" id="entryList"></div>
+    <div class="entry-detail" id="entryDetail" style="display:none"></div>
+  </div>
+</div>
+
+<div id="modalContainer"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════════════════
+const OWNER_SEC = 'Isabelle → Sunny → Xenia';
+const BACKUP_SEC = 'Voir ordre ci-dessus';
+
+function toggleTheme() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
+  document.getElementById('themeToggle').textContent = isDark ? '🌙 Mode sombre' : '☀️ Mode clair';
+  localStorage.setItem('kb-theme', isDark ? 'light' : 'dark');
+}
+
+(function initTheme() {
+  const saved = localStorage.getItem('kb-theme');
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    // button text set after DOM ready
+    window.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('themeToggle');
+      if (btn) btn.textContent = '☀️ Mode clair';
+    });
+  }
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// KNOWLEDGE BASE DATA
+// To add entries permanently: edit KNOWLEDGE_BASE below, save file to O:
+// To add entries temporarily this session: use "+ Nouvelle entrée"
+// ═══════════════════════════════════════════════════════════════
+// To add entries permanently: edit KNOWLEDGE_BASE below, save file to O:
+// To add entries temporarily this session: use "+ Nouvelle entrée"
+// ═══════════════════════════════════════════════════════════════
+const KNOWLEDGE_BASE = [
+
+// ── PERSONNEL ────────────────────────────────────────────────
+{
+  id: 'remplacements',
+  title: 'Gestion des remplacements',
+  type: 'procedure',
+  category: 'personnel',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['remplacements','absences','RP','journaliers','scolaria','matin','07h00'],
+  summary: 'Procédure quotidienne 06h30–07h50. Gestion des absences enseignants, attribution des remplaçants permanents (RP) puis journaliers via Scolaria.',
+  sections: [
+    { heading: 'Tableau des absences', blocks: [
+      { type: 'info', title: 'Règles de déclaration', items: [
+        'Formulaire à soumettre impérativement avant 07h00.',
+        'Après 07h00 : l\'enseignant appelle le secrétariat au 247-55170.',
+        'Congés extraordinaires : demande préalable sur eforms.ef.men.lu, puis formulaire absence.'] },
+      { type: 'link', label: 'Formulaire absence (Office Forms)', url: 'https://forms.office.com/r/9BXVjazWYw' },
+      { type: 'link', label: 'Congés extraordinaires (eforms)', url: 'https://eforms.ef.men.lu' },
+    ]},
+    { heading: 'Tableau des remplacements', blocks: [
+      { type: 'text', text: 'Reporter chaque absence dans le tableau. Vérifier systématiquement :' },
+      { type: 'bullets', items: ['Date exacte de l\'absence','Durée de l\'absence','Présence d\'un cours de natation → vérifier brevet du remplaçant','Nom du remplaçant souhaité (si indiqué)','Horaires correctement encodés par l\'enseignant'] },
+      { type: 'flag', title: 'LW / DLL — à clarifier', items: ['La règle pour les absences LW (Lernwerkstatt) et DLL n\'est pas fixée uniformément.','Consulter le/la président(e) de l\'établissement concerné pour chaque cas.'] },
+      { type: 'text', text: 'Absences sans remplacement → colorer en vert dans le tableau.' },
+    ]},
+    { heading: 'Tableau des disponibilités', blocks: [
+      { type: 'table', headers: ['Couleur','Signification'], rows: [['🟩 Vert','Disponible pour remplacement'],['🟧 Orange','Tâche fixe — non disponible'],['🟥 Rouge','Occupé / congé / maladie']] },
+      { type: 'bullets', items: ['Vérifier brevet de natation si cours de natation','Vérifier spécialité de cycle (1–4)','Privilégier l\'établissement d\'attache du RP'] },
+    ]},
+    { heading: 'Remplaçants journaliers via Scolaria', blocks: [
+      { type: 'text', text: 'Quand toutes les ressources RP sont épuisées :' },
+      { type: 'steps', items: ['Se connecter à Scolaria.','Sélectionner : année, commune, enseignant concerné.','Attention : période = semaine complète Lundi–Samedi, pas seulement le jour.','Valider par OK. Apposer un crochet sur la feuille imprimée.'] },
+    ]},
+    { heading: 'Procédure de secours — aucun remplaçant disponible', blocks: [
+      { type: 'warn', title: 'Aucun RP ni journalier disponible', items: ['Les élèves de la classe sans enseignant sont répartis entre les enseignants présents.','Décision coordonnée avec le/la président(e) de l\'établissement.'] },
+    ]},
+    { heading: 'Suivi des absences — signalement au SRH', blocks: [
+      { type: 'warn', title: '3 situations à signaler proactivement au SRH', items: [
+        '1. Arrêt de longue durée → alerter à l\'approche des 180 jours dans l\'année. Permet de lancer les procédures : médecin du travail, commission des pensions.',
+        '2. Absences courtes mais très fréquentes → pattern à signaler.',
+        '3. Retour après longue absence + rechute rapide → à surveiller et signaler.'] },
+    ]},
+  ]
+},
+
+{
+  id: 'conge-maternite',
+  title: 'Congé maternité et congé parental',
+  type: 'procedure',
+  category: 'personnel',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['maternité','parental','zukunftskeess','CAF','MENJE','grossesse','naissance'],
+  summary: 'De l\'annonce de grossesse jusqu\'au congé parental. Inclut les contacts MENJE par catégorie d\'agent et la procédure Zukunftskeess.',
+  sections: [
+    { heading: 'Contacts MENJE selon la catégorie d\'agent', blocks: [
+      { type: 'table', headers: ['Catégorie','Contact MENJE'], rows: [
+        ['Enseignants & stagiaires','THOMMES Nadine / NEPPER Pierre / Groupe Enseignants EF'],
+        ['Chargés de cours','MARTINS TAVARES Yannick'],
+        ['Éducatrices / Éducatrice graduée','MARTINEZ Anne-Marie'],
+      ]},
+    ]},
+    { heading: 'Phase 1 — Annonce de grossesse', blocks: [
+      { type: 'steps', items: [
+        'Demander un certificat de grossesse émis par un gynécologue (scan suffisant).',
+        'Transmettre le certificat au MENJE (contact selon catégorie ci-dessus).',
+        'Le directeur évalue la situation avec l\'enseignante — aménagement de poste éventuel.',
+        'Remplir la demande d\'aménagement auprès du médecin du travail (AM).',
+        'L\'enseignante est convoquée chez le médecin du travail du ministère.',
+      ]},
+    ]},
+    { heading: 'Phase 2 — Traitement du congé maternité', blocks: [
+      { type: 'steps', items: [
+        'Recevoir le certificat de maternité.',
+        'Calculer la durée via le calculateur CNS (cns.lu, rubrique maternité).',
+        'Transmettre certificat + durée calculée au MENJE (contact selon catégorie) + Service scolaire Differdange.',
+        'Insérer les données dans le tableau Excel « Congé longue durée ».',
+        'Mettre Scolaria à jour : absence maternité, remplaçant, nombre de leçons.',
+      ]},
+      { type: 'link', label: 'Calculateur CNS — congé maternité', url: 'https://www.cns.lu' },
+    ]},
+    { heading: 'Phase 3 — Congé parental (optionnel)', blocks: [
+      { type: 'text', text: 'Si l\'enseignante souhaite un congé parental consécutif : lettre adressée à Monsieur MEISCH (scan PDF suffit, ou remise en main propre).' },
+      { type: 'text', text: 'La lettre précise : demande de congé maternité suivi d\'un congé parental (100%) sur 4 ou 6 mois.' },
+      { type: 'steps', items: [
+        'L\'agent remplit le formulaire de demande d\'indemnité de congé parental en original et l\'envoie au secrétariat.',
+        'Le secrétariat transmet le dossier à la Zukunftskeess (CAF). L\'agent n\'a aucune démarche directe à effectuer.',
+      ]},
+      { type: 'link', label: 'Formulaire demande indemnité congé parental', url: 'https://guichet.public.lu/dam-assets/catalogue-formulaires/conge-parental/conge-parental-demande-indemnite/demande-indemnite-conge-parental-fr.pdf' },
+      { type: 'warn', title: 'Important', items: ['Tous les documents reçus de la Zukunftskeess doivent être transmis à la direction DR04.','La Zukunftskeess envoie une « Confirmation du congé parental » dès que l\'indemnité est validée.'] },
+    ]},
+    { heading: 'Phase 4 — Démarches à la naissance', blocks: [
+      { type: 'steps', items: [
+        'Recevoir l\'acte de naissance.',
+        'Calculer la durée définitive du congé maternité (calcul final).',
+        'Faire établir et signer par le directeur l\'Attestation du congé de maternité.',
+        'Envoyer l\'original signé à la Zukunftskeess (CAF).',
+        'Envoyer au MENJE (contact selon catégorie) + Service scolaire : copie de l\'attestation + acte de naissance.',
+      ]},
+    ]},
+  ]
+},
+
+{
+  id: 'stp',
+  title: 'Service à temps partiel (STP)',
+  type: 'procedure',
+  category: 'personnel',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['STP','STPd','STPi','temps partiel','réduction tâche'],
+  summary: 'Réduction de la tâche professionnelle d\'un enseignant. STPd (déterminé) ou STPi (indéterminé). Motifs, degrés autorisés et procédure.',
+  sections: [
+    { heading: 'Motifs, durées et degrés autorisés', blocks: [
+      { type: 'table', headers: ['Motif','Durée max.','Degrés autorisés'], rows: [
+        ['Éducation enfant < 6 ans (STPd)','Jusqu\'aux 6 ans','50% ou 75% uniquement'],
+        ['Éducation enfant < 16 ans (STPd)','Jusqu\'aux 16 ans','90, 80, 75, 70, 60, 50, 40%'],
+        ['Raisons personnelles (STPd)','Max. 10 ans','90, 80, 75, 70, 60, 50, 40%'],
+        ['Raisons professionnelles (STPd)','Max. 4 ans','90, 80, 75, 70, 60, 50, 40%'],
+        ['STPi — durée indéterminée','Indéterminée','90, 80, 75, 70, 60, 50, 40%'],
+      ]},
+      { type: 'warn', title: 'Attention', items: ['Le degré de 25% n\'est plus accepté.','Pour motif éducation d\'un enfant : 50% et 75% uniquement.'] },
+    ]},
+    { heading: 'Règles importantes', blocks: [
+      { type: 'bullets', items: [
+        'Le STP doit commencer ou finir avec le début d\'une année scolaire ou d\'un trimestre.',
+        'STPd consécutif à un CMat/CPar : la fin doit coïncider avec début trimestre ou année.',
+        'Prolongation : une seule possible, sans dépasser la durée maximale du motif.',
+      ]},
+      { type: 'flag', title: 'Interruption automatique', items: [
+        'Tout STP est automatiquement interrompu en cas de nouvelle grossesse ou adoption.',
+        'Après le congé maternité/parental, le STP doit être re-demandé entièrement — il ne reprend pas automatiquement.'] },
+      { type: 'info', title: 'STPi — mise en garde', items: ['Retour à une tâche à pourcentage supérieur non garanti dans la même commune. Informer l\'agent avant la demande.'] },
+    ]},
+    { heading: 'Procédure de demande', blocks: [
+      { type: 'steps', items: [
+        'L\'enseignant rédige une lettre adressée au ministère.',
+        'La lettre est remise au secrétariat DR04 (pas directement au ministère).',
+        'Contenu obligatoire : date de début et fin, motif, degré de réduction souhaité.',
+      ]},
+      { type: 'link', label: 'STPd — raisons personnelles', url: 'https://fonction-publique.public.lu/fr/carriere/organisation-temps-travail/congesabsences/stp/stpd/raisons-personnelles.html' },
+      { type: 'link', label: 'STPd — raisons professionnelles', url: 'https://fonction-publique.public.lu/fr/carriere/organisation-temps-travail/congesabsences/stp/stpd/raisons-professionnelles.html' },
+    ]},
+  ]
+},
+
+{
+  id: 'conge-sans-traitement',
+  title: 'Congé sans traitement',
+  type: 'reference',
+  category: 'personnel',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['congé sans traitement','sans solde','personnel'],
+  summary: 'Congé sans traitement accordé pour raisons personnelles/familiales ou professionnelles. Durées maximales et conditions.',
+  sections: [
+    { heading: 'Motifs et durées', blocks: [
+      { type: 'table', headers: ['Motif','Durée max.'], rows: [
+        ['Raisons personnelles ou familiales','10 ans'],
+        ['Raisons professionnelles','4 ans (prolongation exceptionnelle de 2 ans possible)'],
+      ]},
+    ]},
+    { heading: 'Conditions', blocks: [
+      { type: 'bullets', items: [
+        'Demande au chef d\'administration au moins 2 mois avant la date souhaitée.',
+        'Décision notifiée au plus tard 2 semaines avant la date de début.',
+        'Si durée > 2 ans : réintégration subordonnée à une formation INAP (minimum 15 jours).',
+      ]},
+      { type: 'link', label: 'Congé sans traitement — raisons personnelles', url: 'https://fonction-publique.public.lu/fr/carriere/organisation-temps-travail/conges-absences/autre-occupation/conge-sans-traitement-raison-personnelle.html' },
+    ]},
+  ]
+},
+
+{
+  id: 'conges-extraordinaires',
+  title: 'Congés extraordinaires — tableau légal',
+  type: 'reference',
+  category: 'personnel',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'validated',
+  tags: ['congé extraordinaire','mariage','décès','naissance','légal'],
+  summary: 'Durées légales des congés extraordinaires pour fonctionnaires et employés de l\'État.',
+  sections: [
+    { heading: '', blocks: [
+      { type: 'table', headers: ['Événement','Durée'], rows: [
+        ['Célébration du mariage','3 jours'],
+        ['Célébration du partenariat','1 jour'],
+        ['Naissance d\'un enfant (père)','10 jours'],
+        ['Célébration du mariage d\'un enfant','1 jour'],
+        ['Décès du conjoint, partenaire, parent/allié 1er degré','3 jours'],
+        ['Décès d\'un enfant mineur','5 jours'],
+        ['Décès parent/allié 2e degré','1 jour'],
+        ['Déménagement (sur 3 ans de service)','2 jours'],
+        ['Accueil enfant < 16 ans pour adoption','10 jours'],
+      ]},
+      { type: 'info', title: 'Règles', items: [
+        'Congés pris au moment de l\'événement (sauf naissance et accueil adoption).',
+        'Naissance / adoption : jours peuvent être fractionnés, pris dans les 2 mois.',
+        'Non reportables sur le congé de récréation.',
+        'Si l\'événement survient pendant une maladie : congé extraordinaire non dû.',
+      ]},
+    ]},
+  ]
+},
+
+{
+  id: 'eformation-transfert',
+  title: 'E-Formation — transfert de périodes',
+  type: 'reference',
+  category: 'personnel',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'validated',
+  tags: ['eformation','formations','période','transfert','heures'],
+  summary: 'Règle de transfert d\'heures de formation lors du passage de l\'ancienne période (120h) à la nouvelle (48h).',
+  sections: [
+    { heading: '', blocks: [
+      { type: 'info', title: 'Règle de transfert', items: [
+        'Agents passant de l\'ancienne période (120h) à la nouvelle (48h) : seules 16 heures sont transférées dans la nouvelle période — et non 40 heures.',
+        'Le premier date de début de formation fait foi pour déterminer dans quelle période elle est comptabilisée.',
+        'Les agents peuvent reporter un surplus de 16h max. dans la nouvelle période.',
+      ]},
+      { type: 'link', label: 'Portail IFEN — programme de formations', url: 'https://ssl.education.lu/ifen/programme-de-formation-au-choix_e-ef' },
+      { type: 'link', label: 'Validation des heures — plateforme eFormation', url: 'https://portal.education.lu/fondamental' },
+    ]},
+  ]
+},
+
+{
+  id: 'recrutement-remplacants',
+  title: 'Recrutement des remplaçants temporaires',
+  type: 'procedure',
+  category: 'personnel',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['recrutement','remplaçants','habilitation','stage','journaliers'],
+  summary: 'Procédure d\'obtention de l\'attestation habilitant à faire des remplacements, et étapes d\'intégration à la DR04.',
+  sections: [
+    { heading: 'Obtention de l\'habilitation', blocks: [
+      { type: 'steps', items: [
+        'Le candidat suit la procédure via le lien du ministère (ci-dessous).',
+        'Stage de 4 semaines, une semaine par cycle (cycles 1 à 4).',
+        'Chaque titulaire de classe donne un avis favorable/défavorable.',
+        'Le directeur de région apprécie le portfolio de stage du candidat.',
+        'Le Collège des directeurs délibère et transmet sa proposition au ministre.',
+      ]},
+      { type: 'link', label: 'Procédure recrutement remplaçants — MEN', url: 'https://men.public.lu/fr/systeme-educatif/fondamental/personnel-ecoles/recrutement-remplacants-temporaires.html' },
+    ]},
+    { heading: 'Intégration à la DR04', blocks: [
+      { type: 'steps', items: [
+        'Une fois l\'habilitation ministérielle obtenue : inviter le candidat à une réunion d\'information (contact : Claudine Dahm).',
+        'Contrat journalier en 2 exemplaires — à faire signer AVANT le début du premier cours. Signataires : directeur + agent.',
+      ]},
+    ]},
+  ]
+},
+
+// ── ÉLÈVES & FAMILLES ─────────────────────────────────────────
+{
+  id: 'sinistre',
+  title: 'Déclaration de sinistre (dégâts matériels)',
+  type: 'procedure',
+  category: 'eleves',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'validated',
+  tags: ['sinistre','assurance','SNSFP','dégâts matériels','RC'],
+  summary: 'Traitement des déclarations de sinistre pour dégâts matériels causés à ou par un élève. Pièces requises, contrôle et envoi à la SNSFP.',
+  sections: [
+    { heading: 'Procédure', blocks: [
+      { type: 'steps', items: [
+        'Réceptionner le dossier de déclaration.',
+        'Contrôler la conformité des pièces (voir listes ci-dessous).',
+        'Faire signer le dossier complet par le directeur.',
+        'Envoyer par mail à la SNSFP : assuranceRC@snsfp.etat.lu (Mme Stoltz Karin).',
+      ]},
+      { type: 'info', title: 'SNSFP', items: ['Service National de la Sécurité dans la Fonction Publique.','Transmet le dossier à l\'assurance dès qu\'il est jugé complet et conforme.'] },
+    ]},
+    { heading: 'Pièces requises — réparation', blocks: [
+      { type: 'bullets', items: ['Facture originale de l\'objet endommagé','Copie facture ou preuve de paiement + indication âge et valeur de l\'objet','Facture de réparation'] },
+    ]},
+    { heading: 'Pièces requises — remplacement', blocks: [
+      { type: 'bullets', items: ['Facture du nouvel objet','Facture originale de l\'objet endommagé','Copie facture ou preuve de paiement + âge et valeur de l\'objet','Photo de l\'objet endommagé','Attestation d\'impossibilité de réparation (pour lunettes : opticien)'] },
+    ]},
+    { heading: '', blocks: [
+      { type: 'warn', title: 'Factures acquittées uniquement', items: ['Les factures doivent être réellement acquittées. Un devis seul n\'est pas accepté.','Exception : dégâts importants (ex. rétroviseur de voiture) → un devis est accepté par l\'assurance.'] },
+    ]},
+  ]
+},
+
+// ── FINANCES & LOGISTIQUE ─────────────────────────────────────
+{
+  id: 'frais-route',
+  title: 'Frais de route — déclarations',
+  type: 'procedure',
+  category: 'finances',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'to-clarify',
+  tags: ['frais de route','E6','déplacement','étranger','budget'],
+  summary: 'Procédure de déclaration des frais de route. Délai trimestriel, formulaire E6, autorisation préalable pour déplacements à l\'étranger.',
+  sections: [
+    { heading: '', blocks: [
+      { type: 'flag', title: 'Points à clarifier', items: ['Qui soumet les déclarations : enseignants eux-mêmes ou secrétariat ?','Où se trouvent les formulaires E6 et pré-autorisation étranger ?'] },
+    ]},
+    { heading: 'Délais', blocks: [
+      { type: 'info', title: 'Procédures communes — Ministère des Finances (art. 18.1)', items: [
+        'Déclarations à effectuer par trimestre, dans la quinzaine du mois suivant.',
+        'Soumission mensuelle également possible.',
+        'Éviter les soumissions groupées couvrant 6 ou 12 mois.'] },
+    ]},
+    { heading: 'Déplacements à l\'étranger', blocks: [
+      { type: 'warn', title: 'Autorisation préalable obligatoire', items: [
+        'Tout déplacement à l\'étranger (mission ou formation) nécessite l\'accord préalable du service finances et budget AVANT le départ.',
+        'Sans autorisation préalable, les frais ne seront pas remboursés.'] },
+      { type: 'steps', items: [
+        'Soumettre le formulaire de pré-autorisation au service finances et budget.',
+        'Attendre la confirmation.',
+        'Après le déplacement : remplir le formulaire E6.',
+        'Transmettre à Marc-Antoine Heinemann (budget DR04) ou au service finances.'] },
+      { type: 'info', title: 'Format itinéraire dans E6', items: ['Point de départ (Differdange DIR04) → destination → lieu de résidence.','Exemple : Differdange (DIR04) – Berlin – Pétange.','Demi-journée = 0,5 unité.'] },
+    ]},
+    { heading: 'Archivage', blocks: [
+      { type: 'bullets', items: [
+        'Copie électronique : O:\\Budget Direction\\Factures Budget Direction',
+        'Copie papier : classeur « Budget »',
+      ]},
+    ]},
+  ]
+},
+
+{
+  id: 'courrier-affranchisseuse',
+  title: 'Courrier entrant/sortant & affranchisseuse',
+  type: 'procedure',
+  category: 'finances',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['courrier','affranchisseuse','OTRS','signataire','poste'],
+  summary: 'Traitement du courrier entrant (ouverture, datage, signataire) et utilisation de l\'affranchisseuse. Lecture mensuelle pour La Poste.',
+  sections: [
+    { heading: 'Courrier entrant', blocks: [
+      { type: 'bullets', items: [
+        'Tout courrier (sauf confidentiel) est ouvert par le secrétariat, y compris celui adressé au directeur.',
+        'Courrier nominatif à une personne spécifique : remis en main propre.',
+        'Chaque courrier est daté à sa réception.',
+        'Le courrier est déposé dans le signataire du directeur (consulté 2× par jour).',
+      ]},
+    ]},
+    { heading: 'Affranchisseuse — utilisation', blocks: [
+      { type: 'steps', items: [
+        'Saisir le montant et appuyer sur le bouton bleu (ex. 2,00 € → taper 2.00 + bouton bleu).',
+        'Valider quand le montant affiché correspond.'] },
+    ]},
+    { heading: 'Lecture mensuelle pour La Poste', blocks: [
+      { type: 'steps', items: [
+        'Éteindre la machine.',
+        'Appuyer simultanément sur « M » et « O » en maintenant, puis rallumer.',
+        'Faire passer la feuille de La Poste en verso (arrière de la feuille).',
+        'Rééteindre la machine (retour à l\'affranchissement).',
+        'Inscrire la date de lecture et signer.',
+        'Faire une copie pour le classeur.',
+        'Renvoyer la feuille à La Poste par courrier.',
+      ]},
+    ]},
+  ]
+},
+
+// ── OUTILS & SYSTÈMES ─────────────────────────────────────────
+{
+  id: 'salto',
+  title: 'SALTO — Gestion des badges d\'accès',
+  type: 'procedure',
+  category: 'outils',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['SALTO','badge','accès','VPN','NFC','bâtiment'],
+  summary: 'Gestion des accès aux bâtiments via le système SALTO. Connexion VPN obligatoire. Création de nouveaux accès, lecture des codes NFC.',
+  sections: [
+    { heading: 'Prérequis', blocks: [
+      { type: 'warn', title: 'VPN obligatoire', items: ['Se connecter au VPN CGIE avant d\'accéder à SALTO.'] },
+      { type: 'link', label: 'VPN CGIE', url: 'https://vpn.cgie.lu/' },
+      { type: 'link', label: 'Interface SALTO', url: 'http://salto:8100/index.html#!/login' },
+      { type: 'flag', title: 'Identifiants', items: ['Les identifiants sont personnels (un compte par secrétaire).','Ne pas documenter les mots de passe ici — les stocker dans un gestionnaire sécurisé.'] },
+    ]},
+    { heading: 'Zones et portes', blocks: [
+      { type: 'bullets', items: [
+        'Si une Zone est définie : le point d\'accès 02 suffit (donne accès à toutes les portes de la zone).',
+        'Si aucune Zone : sélectionner manuellement toutes les portes dans le point d\'accès.',
+        'Porte d\'entrée de chaque étage = numéro 02.',
+      ]},
+    ]},
+    { heading: 'Créer un nouvel accès', blocks: [
+      { type: 'text', text: 'Si la personne n\'est pas dans le système, la créer avec les champs :' },
+      { type: 'bullets', items: ['Titre, Prénom, Nom de famille','Service','IAM','Code ROM'] },
+      { type: 'info', title: 'Code ROM', items: [
+        'Disponible dans l\'application NFC Tools (smartphone).',
+        'Format : 6 caractères (pas les « : »).',
+        'Ancienne carte à 8 caractères : ajouter 000000 au début.'] },
+    ]},
+    { heading: 'Résolution de problème — clé impossible à mettre à jour', blocks: [
+      { type: 'steps', items: ['Cliquer sur « Annuler clé ».','Relire le Code ROM via NFC Tools.','Saisir à nouveau le Code ROM.'] },
+    ]},
+  ]
+},
+
+{
+  id: 'scolaria',
+  title: 'Scolaria — guide rapide',
+  type: 'reference',
+  category: 'outils',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['scolaria','remplacements','absences','export','coordinateurs','affectations'],
+  summary: 'Fonctions clés de la plateforme Scolaria utilisées au quotidien par le secrétariat.',
+  sections: [
+    { heading: 'Fonctions principales', blocks: [
+      { type: 'table', headers: ['Fonction','Navigation'], rows: [
+        ['Remplaçants journaliers','Recherche → commune → enseignant → période Lun–Sam'],
+        ['Validation heures absence','ARPD → valider les heures'],
+        ['Export coordinateurs de cycle','Export de données → Export enseignant → Décharge communale (par cycle)'],
+        ['Affectation nouveaux enseignants','Affectation des enseignants des bureaux régionaux'],
+        ['Recherche enseignant / élève','Recherche de personnes'],
+      ]},
+      { type: 'warn', title: 'Période Scolaria', items: ['Toujours sélectionner la semaine complète Lundi–Samedi, même pour une absence d\'un seul jour.'] },
+      { type: 'link', label: 'Guide Scolaria DR04 (PDF)', url: 'O:\\DR04\\20200826 Scolaria Saisie des remplacements DIR (V4.2).pdf' },
+    ]},
+  ]
+},
+
+{
+  id: 'mfiles',
+  title: 'M-Files — archivage des documents',
+  type: 'reference',
+  category: 'outils',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['M-Files','archivage','classement','documents','scan'],
+  summary: 'Archivage des dossiers des enseignants dans M-Files. Nomenclature et procédure de classement.',
+  sections: [
+    { heading: 'Procédure de classement', blocks: [
+      { type: 'steps', items: [
+        'Nommer le document dans l\'onglet « Objet ».',
+        'Choisir le nom de l\'agent.',
+        'Sélectionner le type et sous-type de document.',
+        'Indiquer la date de l\'événement si applicable.',
+      ]},
+      { type: 'info', title: 'Emplacement scan', items: ['Dossier scan : O:\\DR04\\scan\\Secretariat'] },
+    ]},
+    { heading: 'En cas de bug M-Files', blocks: [
+      { type: 'info', title: 'Exécutable de secours', items: ['C:\\Program Files\\M-Files\\24.1.13312.11\\Bin\\x64'] },
+    ]},
+  ]
+},
+
+{
+  id: 'eduroam',
+  title: 'Eduroam — connexion WiFi',
+  type: 'reference',
+  category: 'outils',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'validated',
+  tags: ['eduroam','wifi','connexion','IAM','réseau'],
+  summary: 'Identifiants et procédure de connexion au réseau WiFi Eduroam pour le personnel.',
+  sections: [
+    { heading: '', blocks: [
+      { type: 'info', title: 'Identifiants', items: [
+        'Login : IAM de la personne @iam.education.lu',
+        'Exemple : Max Mustermann → MusMa123@iam.education.lu',
+        'Mot de passe : identique à tous les autres logins (PC, OneDrive, Outlook, etc.)',
+      ]},
+    ]},
+  ]
+},
+
+{
+  id: 'iam-cgie',
+  title: 'IAM CTIE — trouver son identifiant',
+  type: 'reference',
+  category: 'outils',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'validated',
+  tags: ['IAM','CGIE','CTIE','identifiant','connexion','profil'],
+  summary: 'Comment trouver l\'identifiant UID + Applications Web (IAM CGIE) d\'un agent.',
+  sections: [
+    { heading: '', blocks: [
+      { type: 'steps', items: [
+        'Se connecter via ce lien : Internal connection (etat.lu)',
+        'Aller dans « Mon profil ».',
+        'Chercher « IAM CGIE » : Identifiant UID + Applications Web.',
+      ]},
+      { type: 'link', label: 'Connexion interne etat.lu', url: 'https://internal.etat.lu' },
+    ]},
+  ]
+},
+
+// ── CYCLE SCOLAIRE ────────────────────────────────────────────
+{
+  id: 'preparation-annee',
+  title: 'Préparation nouvelle année scolaire',
+  type: 'procedure',
+  category: 'cycle',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['nouvelle année','rentrée','juin','juillet','septembre','checklist'],
+  summary: 'Checklist juin / juillet / septembre pour la préparation de la rentrée scolaire.',
+  sections: [
+    { heading: 'Juin', blocks: [
+      { type: 'bullets', items: [
+        'Annuler les livraisons de fruits (Grosbusch) pour les vacances d\'été.',
+        'Informer le facteur de la fermeture des bureaux — laisser le courrier dans la boîte aux lettres et à la réception.',
+      ]},
+    ]},
+    { heading: 'Juillet', blocks: [
+      { type: 'bullets', items: [
+        'Classer les documents en suspens.',
+        'Réorganiser Outlook si nécessaire.',
+        'Réorganiser le bureau si nécessaire.',
+        'Créer de nouvelles étiquettes pour les classeurs.',
+        'Créer un nouveau tableau des remplacements.',
+        'Créer un nouveau tableau de disponibilité des remplaçants permanents.',
+        'Créer dans le lecteur O: de nouveaux dossiers pour l\'année scolaire.',
+        'Créer un nouveau tableau des heures des remplaçants permanents.',
+        'Vérifier le « signataire » et en commander un nouveau si nécessaire.',
+        'Trier les dossiers personnels — envoyer les dossiers des personnes ayant quitté DR04 vers leur nouvelle direction.',
+        'Envoyer un mail au service GED pour connaître les nouvelles affectations.',
+        'En cas de décès survenu durant l\'année : appliquer la procédure MENJE (à confirmer).',
+      ]},
+      { type: 'flag', title: 'À clarifier', items: ['Contact Misha Ludwig (école du Centre) en juillet — objet exact non documenté. Clarifier avec les secrétaires.'] },
+    ]},
+    { heading: 'Septembre', blocks: [
+      { type: 'bullets', items: [
+        'Vérifier le stock de matériel de bureau et commander si nécessaire.',
+        'Établir la liste des coordinateurs de cycle (export Scolaria).',
+        'Établir la liste des contacts pour l\'Ersatz du matin (auprès de tous les présidents).',
+        'Mettre Scolaria à jour : toutes les absences longue durée (maternité, congé parental, etc.).',
+        'Commander les autocollants MyCard au Helpdesk CGIE (± 550 pièces). Répartition : 100 pièces pour Niederkorn, Fousbann, Differdange ; 75 pièces pour Woiwer et Oberkorn.',
+        'Créer les dossiers personnels pour les nouveaux agents ; retirer les anciens.',
+        'Créer et mettre à jour le tableau des disponibilités RP + onglet Légende + contacts des écoles.',
+        'Envoyer aux enseignants le mail annuel de rappel de la procédure d\'absence.',
+        'Mettre à jour les affectations des enseignants sans affectation dans Scolaria.',
+      ]},
+    ]},
+  ]
+},
+
+// ── CONTACTS ─────────────────────────────────────────────────
+{
+  id: 'contacts',
+  title: 'Contacts et interlocuteurs',
+  type: 'reference',
+  category: 'contacts',
+  owner: 'Gestionnaire administratif',
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['contacts','MENJE','présidents','interlocuteurs','écoles','RH'],
+  summary: 'Référence centrale des contacts MENJE, présidents de comité d\'école et services internes. À mettre à jour dès qu\'un contact change.',
+  sections: [
+    { heading: 'MENJE — contacts par service', blocks: [
+      { type: 'table', headers: ['Service / Rôle','Contact'], rows: [
+        ['Service scolaire — Cheffe de service','Marilena Falbo'],
+        ['Service scolaire','Tania Machado'],
+        ['Direction générale EF','Georges Strauss, Michel Schiltz, Françoise Hilbert'],
+        ['Bureau Collège des directeurs','Zoltan Gaetti, Natacha Debière, Jacques Foetz'],
+        ['Service finances et budget','Mélissa Cordeiro, Thierry S.'],
+        ['Service RH — Admin / Éduc / Psy','Alma Rastoder, Anne-Marie Martinez'],
+        ['RH — Dossiers Pension','Pierre NEPPER'],
+        ['Cellule Enseignants EF (enseignants & stagiaires)','THOMMES Nadine / NEPPER Pierre / Groupe EF'],
+        ['Cellule Enseignants EF — Chargés de cours','MARTINS TAVARES Yannick'],
+        ['Cellule Enseignants EF — Éducatrices','MARTINEZ Anne-Marie'],
+      ]},
+    ]},
+    { heading: 'Présidents de comité d\'école', blocks: [
+      { type: 'table', headers: ['École','Président(e)'], rows: [
+        ['Differdange-Centre','Misha Ludwig'],
+        ['Fousbann & Lasauvage','Carole Batting'],
+        ['Niederkorn','Lisa HENGEN'],
+        ['Oberkorn','Michèle CORBI'],
+        ['Woiwer','Luc WELTER'],
+      ]},
+    ]},
+    { heading: 'Services internes et externes', blocks: [
+      { type: 'table', headers: ['Service','Contact / Remarque'], rows: [
+        ['Secrétariat DR04','247-55170 | secretariat.differdange@men.lu'],
+        ['Helpdesk CGE (imprimantes, incidents IT)','Ticket via Helpdesk CGE'],
+        ['CGIE Helpdesk (stickers MyCard, SALTO, Peppol)','CGIE Helpdesk'],
+        ['Service Informatique Differdange (badges, copie)','sinfo@differdange.lu'],
+        ['Service STAR (vin d\'honneur, accueil)','Mr ZEKAN Armin'],
+        ['eFacturation / Peppol codes','équipe eFacturation — Ministère de la Digitalisation'],
+        ['SNSFP — Assurance RC','assuranceRC@snsfp.etat.lu — Mme Stoltz Karin'],
+        ['Marc-Antoine Heinemann (budget, patron de stage)','Collège des directeurs EF / Service finances'],
+        ['Zukunftskeess (CAF)','Attestations maternité + congé parental'],
+      ]},
+    ]},
+  ]
+},
+
+{
+  id: 'ecoles-adresses',
+  title: 'Écoles DR04 — adresses et coordonnées',
+  type: 'reference',
+  category: 'contacts',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'validated',
+  tags: ['écoles','adresses','Differdange','Niederkorn','Oberkorn','Fousbann','Woiwer'],
+  summary: 'Adresses de tous les bâtiments scolaires du ressort de la DR04 Differdange.',
+  sections: [
+    { heading: '', blocks: [
+      { type: 'table', headers: ['École / Bâtiment','Adresse'], rows: [
+        ['Direction DR04','2, rue John Ernest Dolibois, L-4573 Differdange'],
+        ['École Differdange — Garçons & Pavillon, Filles, Ménagère','20, rue Émile Mark, L-4620 Differdange'],
+        ['École Differdange — Annexes','2, rue de la Montagne, L-4630 Differdange'],
+        ['Fousbann & Lasauvage','2, rue John Castegnaro, L-4639 Differdange'],
+        ['Lasauvage (cycles 1–2)','1, place Saintignon, L-4698 Lasauvage'],
+        ['Niederkorn — Garçons','1, rue Pierre Gansen, L-4570 Niederkorn'],
+        ['Niederkorn — Filles','264, avenue de la Liberté, L-4602 Niederkorn'],
+        ['Niederkorn — Pavillon préscolaire','Rue Saint Pierre, L-4646 Niederkorn'],
+        ['Niederkorn — Im Mai','189, avenue de la Liberté, L-4602 Niederkorn'],
+        ['Niederkorn — Mathendahl','30, rue du Castel, L-4525 Niederkorn'],
+        ['Oberkorn — Um Bock','12, rue Boettelchen, L-4517 Oberkorn'],
+        ['Oberkorn — Garçons / Prince Henri','18, rue Prince Henri, L-4579 Oberkorn'],
+        ['Woiwer','2, rue Neuwies, L-4635 Differdange'],
+      ]},
+    ]},
+  ]
+},
+
+// ── TÂCHES PONCTUELLES ────────────────────────────────────────
+{
+  id: 'decharges',
+  title: 'Décharges — procédure annuelle',
+  type: 'procedure',
+  category: 'ponctuel',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['décharges','coordinateurs','formulaire','mai','Scolaria'],
+  summary: 'Collecte annuelle des demandes de décharges. Formulaire envoyé aux présidents début mars, retour au 1er mai.',
+  sections: [
+    { heading: 'Calendrier', blocks: [
+      { type: 'table', headers: ['Échéance','Action'], rows: [
+        ['Début mars','Nouveau formulaire disponible — envoyer aux présidents de tous les établissements.'],
+        ['Mars → mi-avril','Période optimale de collecte — relancer les présidents si nécessaire.'],
+        ['1er mai (au plus tard)','Date limite de réception des formulaires au secrétariat DR04.'],
+      ]},
+      { type: 'info', title: 'Pourquoi agir tôt ?', items: ['Plus les décharges arrivent tôt, mieux la direction peut préparer l\'organisation scolaire de l\'année suivante.'] },
+    ]},
+    { heading: 'Procédure', blocks: [
+      { type: 'steps', items: [
+        'Début mars : envoyer le formulaire aux présidents.',
+        'Saisir chaque retour dans le tableau « Tableau Décharges.xlsx ».',
+        'Relancer les présidents n\'ayant pas encore transmis avant mi-avril.',
+        'À la clôture (1er mai) : consolider le tableau pour la direction.',
+      ]},
+      { type: 'link', label: 'Formulaire décharges — portail fondamental', url: 'https://portal.education.lu/fondamental/Enseignants/Formulaires-et-notes-de-service' },
+    ]},
+    { heading: 'Export coordinateurs de cycle (Scolaria)', blocks: [
+      { type: 'steps', items: ['Ouvrir Scolaria.','Export de données → Export enseignant → Décharge communale (par cycle).'] },
+    ]},
+  ]
+},
+
+{
+  id: 'liste1-certificats',
+  title: 'Liste 1 — Certificats années de service',
+  type: 'procedure',
+  category: 'ponctuel',
+  owner: OWNER_SEC,
+  backup: OWNER_SEC,
+  status: 'draft',
+  tags: ['certificat','années de service','liste 1','schoulorganisatioun'],
+  summary: 'Identification des agents ayant besoin d\'un certificat portant sur les années de service prestées, en lien avec la schoulorganisatioun.',
+  sections: [
+    { heading: '', blocks: [
+      { type: 'steps', items: [
+        'Ouvrir le fichier Liste 1 : O:\\DR04\\Direction\\Claudine\\schoulorganisatioun\\Schoulorganisatioun 25-26\\Liste 1',
+        'Dans le premier onglet (Occupation des postes) : identifier les agents avec un poste non « illimité ».',
+        'Ces agents auront besoin d\'un Certificat portant sur les années de service prestées.',
+        'Préparer les certificats en avance (idéalement avant avril pour éviter le stress de fin d\'année).',
+      ]},
+    ]},
+  ]
+},
+
+// ── STUBS ─────────────────────────────────────────────────────
+{ id: 'acces-it', title: 'Accès IT — procédure', type: 'procedure', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['IT','accès','création','suppression'], summary: 'Procédure pour les demandes de création et suppression d\'accès informatiques.', sections: [] },
+{ id: 'budget', title: 'Budget — gestion', type: 'procedure', category: 'finances', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['budget','commandes','factures'], summary: 'Gestion du budget de fonctionnement de la DR04.', sections: [] },
+{ id: 'commandes-materiel', title: 'Commandes de matériel de bureau', type: 'procedure', category: 'finances', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['matériel','commandes','fournitures'], summary: 'Procédure de commande de matériel de bureau. Seuil nécessitant accord préalable du directeur.', sections: [] },
+{ id: 'dossiers-personnels', title: 'Dossiers personnels — classement', type: 'procedure', category: 'personnel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['dossiers personnels','classement','archives'], summary: 'Classement alphabétique des dossiers personnels des enseignants et éducateurs. Gestion des arrivées/départs.', sections: [] },
+{ id: 'batiment-gravity', title: 'Gestion bâtiment Gravity', type: 'procedure', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['bâtiment','gravity','sécurité','signalétique'], summary: 'Gestion du bâtiment Gravity : sécurité, nettoyage, signalétique, points d\'assemblage.', sections: [] },
+{ id: 'salles-reunion', title: 'Gestion des salles de réunion', type: 'procedure', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['salles','réunion','réservation'], summary: 'Procédure de réservation et gestion des salles de réunion.', sections: [] },
+{ id: 'sia', title: 'SIA — procédure', type: 'procedure', category: 'ponctuel', owner: 'Claudine', backup: OWNER_SEC, status: 'stub', tags: ['SIA'], summary: 'Procédure SIA (à documenter).', sections: [] },
+{ id: 'stage-remplacement', title: 'Stage de remplacement — suivi', type: 'procedure', category: 'personnel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['stage','remplacement','vademecum','portfolio'], summary: 'Suivi administratif des stagiaires en stage de remplacement. Portfolio, appréciations, transmission au Collège des directeurs.', sections: [] },
+{ id: 'telephone', title: 'Téléphone — comportement et matériel', type: 'know-how', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['téléphone','comportement','matériel'], summary: 'Comportement attendu au téléphone (pendant et après la conversation). Informations sur le matériel téléphonique.', sections: [] },
+{ id: 'taches-redactionnelles', title: 'Tâches rédactionnelles', type: 'know-how', category: 'personnel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['rédaction','lettres','courrier','templates'], summary: 'Lettres types et tâches rédactionnelles récurrentes du secrétariat.', sections: [] },
+{ id: 'otrs-emails', title: 'OTRS — routing des e-mails', type: 'reference', category: 'outils', owner: 'Claudine', backup: OWNER_SEC, status: 'stub', tags: ['OTRS','email','outlook','routing'], summary: 'Système de gestion des e-mails OTRS. Sujets et responsables : SIA (Claudine), Stage ENS (Marianne), Stage AEBS (Christian), Stage DAP (Dani). Élèves → DIREG.', sections: [] },
+{ id: 'peppol', title: 'Peppol — commande de codes', type: 'procedure', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['Peppol','facturation électronique','CTIE'], summary: 'Procédure de commande de nouveaux codes Peppol auprès de l\'équipe eFacturation — Ministère de la Digitalisation.', sections: [] },
+{ id: 'commission-pensions', title: 'Commission des pensions', type: 'procedure', category: 'ponctuel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['pensions','commission','Pierre NEPPER'], summary: 'Procédure pour les dossiers soumis à la commission des pensions. Contact : Pierre NEPPER.', sections: [] },
+{ id: 'commission-orientation', title: 'Commission d\'orientation', type: 'procedure', category: 'ponctuel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['orientation','commission'], summary: 'Procédure pour la commission d\'orientation des élèves.', sections: [] },
+{ id: 'entretiens-appreciation', title: 'Entretiens d\'appréciation', type: 'procedure', category: 'ponctuel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['entretien','appréciation','performance'], summary: 'Procédure et planification des entretiens d\'appréciation des performances professionnelles.', sections: [] },
+{ id: 'gestion-stagiaires', title: 'Gestion des stagiaires', type: 'procedure', category: 'ponctuel', owner: 'Marianne', backup: OWNER_SEC, status: 'stub', tags: ['stagiaires','stage','initiation'], summary: 'Gestion administrative des fonctionnaires stagiaires et employés en période d\'initiation. Patron de stage.', sections: [] },
+{ id: 'ordre-justification', title: 'Ordre de justification', type: 'procedure', category: 'ponctuel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['ordre de justification','disciplinaire','loi 1979'], summary: 'Procédure pour l\'émission d\'un ordre de justification. Base légale : loi du 16 avril 1979, art. 9.', sections: [] },
+{ id: 'ordres-nationaux', title: 'Ordres nationaux', type: 'procedure', category: 'ponctuel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['ordres nationaux','distinctions','honneurs'], summary: 'Procédure pour les distinctions honorifiques dans les ordres nationaux.', sections: [] },
+{ id: 'postes-responsabilites', title: 'Postes à responsabilités particulières', type: 'procedure', category: 'ponctuel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['postes','responsabilités','décharges'], summary: 'Gestion des postes à responsabilités particulières et des décharges associées.', sections: [] },
+{ id: 'recours', title: 'Recours', type: 'procedure', category: 'ponctuel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['recours','contentieux'], summary: 'Procédure de traitement des recours.', sections: [] },
+{ id: 'apple-tv', title: 'Apple TV', type: 'reference', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['Apple TV','présentations'], summary: 'Guide d\'utilisation de l\'Apple TV pour les présentations.', sections: [] },
+{ id: 'clickshare', title: 'Clickshare', type: 'reference', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['Clickshare','présentations','écran'], summary: 'Guide d\'utilisation du Clickshare pour les présentations et partage d\'écran.', sections: [] },
+{ id: 'onedrive', title: 'OneDrive', type: 'reference', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['OneDrive','stockage','cloud'], summary: 'Utilisation d\'OneDrive pour le stockage et le partage de documents.', sections: [] },
+{ id: 'sharepoint', title: 'SharePoint', type: 'reference', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['SharePoint','documents','collaboration'], summary: 'Utilisation de SharePoint DR04.', sections: [] },
+{ id: 'teams', title: 'Teams', type: 'reference', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['Teams','communication','réunions'], summary: 'Utilisation de Microsoft Teams pour la communication et les réunions.', sections: [] },
+{ id: 'interflex', title: 'Interflex 6020', type: 'reference', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['Interflex','pointage','temps'], summary: 'Connexion et utilisation du système Interflex 6020.', sections: [] },
+{ id: 'eforms', title: 'Eforms — portail formulaires', type: 'reference', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['eforms','formulaires','congés'], summary: 'Utilisation du portail eforms.ef.men.lu pour les demandes de congés et formulaires officiels.', sections: [] },
+{ id: 'zendto-edulink', title: 'ZendTo / eduLink', type: 'reference', category: 'outils', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['ZendTo','eduLink','CGIE','outils'], summary: 'Outils CGIE : ZendTo (transfert de fichiers volumineux) et eduLink.', sections: [] },
+{ id: 'formation-individuelle', title: 'Formation individuelle — demande', type: 'procedure', category: 'personnel', owner: OWNER_SEC, backup: OWNER_SEC, status: 'stub', tags: ['formation','individuelle','demande'], summary: 'Procédure pour les demandes de formation individuelle des enseignants. Demande écrite à la direction, avis favorable, lettre de confirmation.', sections: [] },
+
+]; // END KNOWLEDGE_BASE
+
+// ═══════════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════════
+const CATEGORIES = {
+  personnel:  { label: 'Personnel',          color: '#2563EB' },
+  eleves:     { label: 'Élèves & familles',  color: '#059669' },
+  finances:   { label: 'Finances & logistique', color: '#D97706' },
+  outils:     { label: 'Outils & systèmes', color: '#7C3AED' },
+  cycle:      { label: 'Cycle scolaire',     color: '#0891B2' },
+  contacts:   { label: 'Contacts',           color: '#475569' },
+  ponctuel:   { label: 'Tâches ponctuelles', color: '#EA580C' },
+};
+const TYPES = {
+  procedure: 'Procédure',
+  reference: 'Référence',
+  'know-how': 'Note pratique',
+  stub: 'À compléter',
+};
+const STATUSES = {
+  validated:   { label: 'Validé',       color: '#059669' },
+  draft:        { label: 'Brouillon',    color: '#D97706' },
+  'to-clarify': { label: 'À clarifier', color: '#C00000' },
+  stub:         { label: 'À compléter', color: '#9B9590' },
+};
+
+const PERSONS = {
+  'Isabelle': { color: '#C2410C', initials: 'IS' },
+  'Sunny':    { color: '#0E7490', initials: 'SU' },
+  'Xenia':    { color: '#6D28D9', initials: 'XE' },
+};
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let state = {
+  entries: JSON.parse(JSON.stringify(KNOWLEDGE_BASE)),
+  search: '',
+  category: 'all',
+  type: 'all',
+  status: 'all',
+  person: 'all',
+  selectedId: null,
+};
+
+// ═══════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════
+function filtered() {
+  let q = state.search.toLowerCase().trim();
+  return state.entries.filter(e => {
+    if (state.category !== 'all' && e.category !== state.category) return false;
+    if (state.type !== 'all' && e.type !== state.type) return false;
+    if (state.status !== 'all' && e.status !== state.status) return false;
+    if (state.person !== 'all') {
+      const ownerStr = (e.owner || '') + ' ' + (e.backup || '');
+      if (!ownerStr.includes(state.person)) return false;
+    }
+    if (!q) return true;
+    return (e.title + ' ' + e.summary + ' ' + (e.tags||[]).join(' ')).toLowerCase().includes(q);
+  });
+}
+
+function getEntry(id) { return state.entries.find(e => e.id === id); }
+
+function saveEntry(entry) {
+  const idx = state.entries.findIndex(e => e.id === entry.id);
+  if (idx >= 0) state.entries[idx] = entry;
+  else state.entries.unshift(entry);
+}
+
+function deleteEntry(id) {
+  state.entries = state.entries.filter(e => e.id !== id);
+  if (state.selectedId === id) state.selectedId = null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+function hl(text) {
+  if (!state.search.trim()) return escH(text);
+  const q = state.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return escH(text).replace(new RegExp(q, 'gi'), m => `<mark>${m}</mark>`);
+}
+function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function render() {
+  renderSidebar();
+  renderTeam();
+  renderTypeChips();
+  renderCountBar();
+  renderList();
+  renderDetail();
+}
+
+function renderSidebar() {
+  const entries = state.entries;
+  const allCount = entries.length;
+  let html = `<div class="cat-item ${state.category==='all'?'active':''}" onclick="setCategory('all')">
+    <span class="cat-dot" style="background:#888"></span>Toutes les entrées
+    <span class="cat-count">${allCount}</span></div>`;
+  for (const [id, cfg] of Object.entries(CATEGORIES)) {
+    const n = entries.filter(e => e.category === id).length;
+    html += `<div class="cat-item ${state.category===id?'active':''}" onclick="setCategory('${id}')">
+      <span class="cat-dot" style="background:${cfg.color}"></span>${escH(cfg.label)}
+      <span class="cat-count">${n}</span></div>`;
+  }
+  document.getElementById('categoryList').innerHTML = html;
+}
+
+function renderTeam() {
+  const entries = state.entries;
+  let html = '';
+  for (const [name, cfg] of Object.entries(PERSONS)) {
+    const n = entries.filter(e => (e.owner||'').includes(name) || (e.backup||'').includes(name)).length;
+    const active = state.person === name;
+    html += `<div class="person-item ${active ? 'active' : ''}" onclick="setPerson('${name}')">
+      <span class="person-avatar" style="background:${cfg.color}">${cfg.initials}</span>
+      ${escH(name)}
+      <span class="cat-count">${n}</span>
+      <span style="margin-left:2px;font-size:11px;opacity:.5;cursor:pointer" onclick="event.stopPropagation();openPersonProfile('${name}')" title="Profil">⊕</span>
+    </div>`;
+  }
+  document.getElementById('teamList').innerHTML = html;
+}
+  const types = [['all','Tout'],['procedure','Procédures'],['reference','Références'],['know-how','Notes pratiques'],['stub','À compléter']];
+  const classMap = {all:'all',procedure:'',reference:'ref','know-how':'know',stub:'stub'};
+  document.getElementById('typeChips').innerHTML = types.map(([t,l]) =>
+    `<div class="chip ${state.type===t?'active '+classMap[t]:''}" onclick="setType('${t}')">${l}</div>`
+  ).join('');
+}
+
+function renderCountBar() {
+  const f = filtered(); const total = state.entries.length;
+  const stubbCount = state.entries.filter(e=>e.status==='stub').length;
+  const draftCount = state.entries.filter(e=>e.status==='draft').length;
+  const clarifyCount = state.entries.filter(e=>e.status==='to-clarify').length;
+  const validCount = total - stubbCount - draftCount - clarifyCount;
+
+  const mkChip = (label, statusKey, color, count) => {
+    const active = state.status === statusKey;
+    return `<span class="status-chip ${active?'active-filter':''}" style="color:${color};border-color:${active?color:'transparent'};background:${active?color+'18':'transparent'}" onclick="setStatus('${active?'all':statusKey}')">${label} <strong>${count}</strong></span>`;
+  };
+
+  document.getElementById('countBar').innerHTML =
+    `<strong>${f.length}</strong> / <strong>${total}</strong> entrées &nbsp;·&nbsp;`+
+    mkChip('Validées', 'validated', 'var(--ok-bd)', validCount) +
+    mkChip('Brouillons', 'draft', 'var(--warn-bd)', draftCount) +
+    mkChip('À clarifier', 'to-clarify', 'var(--flag-bd)', clarifyCount) +
+    mkChip('Stubs', 'stub', 'var(--text-light)', stubbCount);
+}
+
+function renderList() {
+  const list = document.getElementById('entryList');
+  const panelOpen = state.selectedId !== null;
+  list.className = 'entry-list' + (panelOpen ? ' panel-open' : '');
+
+  const f = filtered();
+
+  // Build topbar title from active filters
+  let titleParts = [];
+  if (state.category !== 'all') titleParts.push(CATEGORIES[state.category]?.label || state.category);
+  if (state.person !== 'all') titleParts.push(state.person);
+  if (state.status !== 'all') titleParts.push(STATUSES[state.status]?.label || state.status);
+  if (state.type !== 'all') titleParts.push(TYPES[state.type] || state.type);
+  if (state.search) titleParts.push(`"${state.search}"`);
+  document.getElementById('topbarTitle').textContent = titleParts.length ? titleParts.join(' · ') : 'Toutes les entrées';
+
+  if (f.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><h3>Aucun résultat</h3><p>Essayez d'autres mots-clés ou élargissez les filtres.</p></div>`;
+    return;
+  }
+  list.innerHTML = f.map(e => {
+    const cat = CATEGORIES[e.category] || {};
+    const isStub = e.type === 'stub' || e.status === 'stub';
+    const selected = state.selectedId === e.id;
+    const typeLabel = TYPES[e.type] || e.type;
+    const statusCfg = STATUSES[e.status] || {};
+    return `<div class="entry-card ${isStub?'stub':''} ${selected?'selected':''}" onclick="selectEntry('${e.id}')">
+      <div class="card-header"><div class="card-title">${hl(e.title)}</div></div>
+      <div class="card-badges">
+        <span class="badge badge-type-${e.type}" onclick="event.stopPropagation();setType('${state.type===e.type?'all':e.type}')" title="Filtrer par type" style="cursor:pointer">${typeLabel}</span>
+        <span class="badge badge-status-${e.status}" style="color:${statusCfg.color||'#9B9590'};background:${statusCfg.color?statusCfg.color+'18':'#F4F4F4'};cursor:pointer" onclick="event.stopPropagation();setStatus('${state.status===e.status?'all':e.status}')" title="Filtrer par statut">${statusCfg.label||e.status}</span>
+      </div>
+      ${isStub ? '<span class="stub-label">Contenu à documenter</span>' :
+        `<div class="card-summary">${hl(e.summary)}</div>`}
+      <div class="card-meta">
+        <span class="cat-pill" onclick="event.stopPropagation();setCategory('${state.category===e.category?'all':e.category}')" style="cursor:pointer" title="Filtrer par catégorie"><span class="cat-pip" style="background:${cat.color||'#888'}"></span>${cat.label||e.category}</span>
+        ${e.owner&&e.owner!=='À définir'?`<span>· ${renderOwnerChips(e.owner)}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderOwnerChips(ownerStr) {
+  // If it's the trio string, render each name as a clickable chip
+  if (ownerStr === OWNER_SEC || ownerStr.includes('→')) {
+    return ownerStr.split('→').map(n => {
+      const name = n.trim();
+      const cfg = PERSONS[name];
+      if (!cfg) return escH(name);
+      return `<span style="cursor:pointer;color:${cfg.color};font-weight:500" onclick="event.stopPropagation();setPerson('${state.person===name?'all':name}')" title="${name}">${escH(name)}</span>`;
+    }).join(' <span style="color:var(--text-light);font-size:10px">→</span> ');
+  }
+  const cfg = PERSONS[ownerStr];
+  if (cfg) return `<span style="cursor:pointer;color:${cfg.color};font-weight:500" onclick="event.stopPropagation();setPerson('${state.person===ownerStr?'all':ownerStr}')" title="${ownerStr}">${escH(ownerStr)}</span>`;
+  return `👤 ${escH(ownerStr)}`;
+}
+
+function renderDetail() {
+  const panel = document.getElementById('entryDetail');
+  const mobileBack = document.getElementById('mobileBack');
+  const contentArea = document.getElementById('contentArea');
+  if (!state.selectedId) {
+    panel.style.display = 'none';
+    if (mobileBack) mobileBack.style.display = 'none';
+    if (contentArea) contentArea.classList.remove('detail-open');
+    return;
+  }
+  const e = getEntry(state.selectedId);
+  if (!e) { panel.style.display = 'none'; return; }
+  panel.style.display = '';
+  if (mobileBack) mobileBack.style.display = 'flex';
+  if (contentArea) contentArea.classList.add('detail-open');
+
+  const cat = CATEGORIES[e.category] || {};
+  const typeLabel = TYPES[e.type] || e.type;
+  const statusCfg = STATUSES[e.status] || {};
+  const isStub = e.type === 'stub' || e.status === 'stub';
+
+  let body = '';
+  if (isStub) {
+    body = `<div class="stub-placeholder">
+      <div class="stub-icon">📝</div>
+      <h3>Contenu à documenter</h3>
+      <p>${escH(e.summary)}</p>
+      <button class="btn btn-primary btn-sm" onclick="openEdit('${e.id}')">Commencer à rédiger</button>
+    </div>`;
+  } else {
+    body = renderSections(e.sections || []);
+  }
+
+  panel.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-header-top">
+        <div class="detail-title">${escH(e.title)}</div>
+        <button class="detail-close" onclick="closeDetail()" title="Fermer">✕</button>
+      </div>
+      <div class="detail-meta">
+        <span class="badge badge-type-${e.type}" style="cursor:pointer" onclick="setType('${state.type===e.type?'all':e.type}')" title="Filtrer">${typeLabel}</span>
+        <span class="badge badge-status-${e.status}" style="color:${statusCfg.color||'#9B9590'};background:${statusCfg.color?statusCfg.color+'18':'#F4F4F4'};cursor:pointer" onclick="setStatus('${state.status===e.status?'all':e.status}')" title="Filtrer">${statusCfg.label||e.status}</span>
+        <span class="meta-sep">·</span>
+        <span class="meta-item" style="cursor:pointer" onclick="setCategory('${state.category===e.category?'all':e.category}')" title="Filtrer"><span class="cat-pip cat-dot" style="background:${cat.color||'#888'};width:8px;height:8px;border-radius:50%;display:inline-block"></span>&nbsp;${cat.label||e.category}</span>
+        ${e.owner?`<span class="meta-sep">·</span><span class="meta-item">${renderOwnerChips(e.owner)}</span>`:''}
+      </div>
+    </div>
+    <div class="detail-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openEdit('${e.id}')">✏️ Modifier</button>
+      <button class="btn btn-ghost btn-sm" style="color:#C00000" onclick="confirmDelete('${e.id}')">🗑 Supprimer</button>
+    </div>
+    <div class="detail-body">${body}</div>`;
+}
+
+function renderSections(sections) {
+  return sections.map(s =>
+    (s.heading ? `<div class="section-heading">${escH(s.heading)}</div>` : '') +
+    (s.blocks||[]).map(renderBlock).join('')
+  ).join('');
+}
+
+function renderBlock(b) {
+  switch(b.type) {
+    case 'text': return `<div class="block block-text">${escH(b.text)}</div>`;
+    case 'steps': return `<ol class="block block-steps">${b.items.map(i=>`<li>${escH(i)}</li>`).join('')}</ol>`;
+    case 'bullets': return `<ul class="block block-bullets">${b.items.map(i=>`<li>${escH(i)}</li>`).join('')}</ul>`;
+    case 'info': case 'warn': case 'flag': case 'ok': {
+      const cls = b.type === 'warn' ? 'warn' : b.type;
+      return `<div class="box ${cls}">
+        ${b.title?`<div class="box-title">${escH(b.title)}</div>`:''}
+        ${(b.items||[]).map(i=>`<div class="box-item">${escH(i)}</div>`).join('')}</div>`;
+    }
+    case 'table': return `<div class="block" style="overflow-x:auto"><table class="block-table">
+      <thead><tr>${b.headers.map(h=>`<th>${escH(h)}</th>`).join('')}</tr></thead>
+      <tbody>${b.rows.map(r=>`<tr>${r.map(c=>`<td>${escH(c)}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table></div>`;
+    case 'link': return `<div class="block block-link"><a href="${escH(b.url)}" target="_blank" rel="noopener">${escH(b.label)}</a></div>`;
+    default: return '';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EDIT MODAL
+// ═══════════════════════════════════════════════════════════════
+function openEdit(id) {
+  state.editTarget = id ? getEntry(id) : null;
+  const e = state.editTarget;
+  const catOptions = Object.entries(CATEGORIES).map(([k,v])=>
+    `<option value="${k}" ${e&&e.category===k?'selected':''}>${v.label}</option>`).join('');
+  const typeOptions = Object.entries(TYPES).map(([k,v])=>
+    `<option value="${k}" ${e&&e.type===k?'selected':''}>${v}</option>`).join('');
+  const statusOptions = Object.entries(STATUSES).map(([k,v])=>
+    `<option value="${k}" ${e&&e.status===k?'selected':''}>${v.label}</option>`).join('');
+
+  const modal = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>${e ? 'Modifier l\'entrée' : 'Nouvelle entrée'}</h2>
+        <button class="detail-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row"><label>Titre *</label>
+          <input id="f_title" value="${escH(e?.title||'')}" placeholder="Titre de la procédure ou référence"></div>
+        <div class="form-row two-col">
+          <div><label>Catégorie</label><select id="f_category">${catOptions}</select></div>
+          <div><label>Type</label><select id="f_type">${typeOptions}</select></div>
+        </div>
+        <div class="form-row two-col">
+          <div><label>Responsable</label><input id="f_owner" value="${escH(e?.owner||'')}"></div>
+          <div><label>Suppléant(e)</label><input id="f_backup" value="${escH(e?.backup||'')}"></div>
+        </div>
+        <div class="form-row two-col">
+          <div><label>Statut</label><select id="f_status">${statusOptions}</select></div>
+          <div><label>Tags (séparés par virgule)</label><input id="f_tags" value="${escH((e?.tags||[]).join(', '))}"></div>
+        </div>
+        <div class="form-row"><label>Résumé *</label>
+          <textarea id="f_summary" rows="2" placeholder="Description courte affichée dans la liste">${escH(e?.summary||'')}</textarea></div>
+        <div class="form-row"><label>Contenu (texte libre)</label>
+          <textarea id="f_content" rows="8" placeholder="Rédigez le contenu de cette entrée. Une fois sauvegardé ici, demandez à votre administrateur de le structurer dans le fichier.">${escH(e?.textContent||'')}</textarea>
+          <div class="form-hint">Ce texte sera affiché tel quel dans la fiche. Pour une mise en forme complète (étapes numérotées, tableaux, etc.), contacter le gestionnaire administratif.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+        <button class="btn btn-primary" onclick="saveFromModal()">Sauvegarder</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('modalContainer').innerHTML = modal;
+}
+
+function saveFromModal() {
+  const title = document.getElementById('f_title').value.trim();
+  const summary = document.getElementById('f_summary').value.trim();
+  if (!title) { alert('Le titre est obligatoire.'); return; }
+  const existing = state.editTarget;
+  const entry = {
+    ...(existing || {}),
+    id: existing?.id || 'entry_' + Date.now(),
+    title,
+    category: document.getElementById('f_category').value,
+    type: document.getElementById('f_type').value,
+    owner: document.getElementById('f_owner').value.trim() || 'À définir',
+    backup: document.getElementById('f_backup').value.trim() || 'À définir',
+    status: document.getElementById('f_status').value,
+    tags: document.getElementById('f_tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    summary: summary || existing?.summary || '',
+    textContent: document.getElementById('f_content').value.trim(),
+    sections: existing?.sections || [],
+  };
+  // If textContent provided, add as a simple text section
+  if (entry.textContent && entry.sections.length === 0) {
+    entry.sections = [{ heading: '', blocks: [{ type: 'text', text: entry.textContent }] }];
+  } else if (entry.textContent) {
+    // update/replace first text block in first section
+    const hasText = entry.sections[0]?.blocks?.find(b=>b.type==='text');
+    if (!hasText && entry.sections[0]) entry.sections[0].blocks.unshift({ type: 'text', text: entry.textContent });
+  }
+  saveEntry(entry);
+  state.selectedId = entry.id;
+  closeModal();
+  render();
+}
+
+function confirmDelete(id) {
+  const e = getEntry(id);
+  if (confirm(`Supprimer « ${e?.title} » ?\n\nCette action est permanente dans cette session.`)) {
+    deleteEntry(id);
+    render();
+  }
+}
+
+function closeModal() {
+  document.getElementById('modalContainer').innerHTML = '';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// IMPORT / EXPORT
+// ═══════════════════════════════════════════════════════════════
+function openImportExport() {
+  const modal = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-header"><h2>Exporter / Importer les données</h2>
+        <button class="detail-close" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <div style="margin-bottom:20px">
+          <h3 style="font-family:'Spectral',serif;font-size:16px;margin-bottom:8px">Exporter</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;line-height:1.6">
+            Téléchargez les données actuelles au format JSON. Envoyez ce fichier au gestionnaire administratif pour mise à jour permanente de la base.</p>
+          <button class="btn btn-primary" onclick="exportJSON()">⬇ Télécharger les données (JSON)</button>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:20px 0">
+        <div>
+          <h3 style="font-family:'Spectral',serif;font-size:16px;margin-bottom:8px">Importer</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;line-height:1.6">
+            Chargez un fichier JSON précédemment exporté pour restaurer ou mettre à jour les données de cette session.</p>
+          <input type="file" id="importFile" accept=".json" style="font-size:13px;margin-bottom:8px;display:block">
+          <button class="btn btn-ghost" onclick="importJSON()">⬆ Importer</button>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:20px 0">
+        <div style="background:var(--info-bg);border-radius:6px;padding:12px;font-size:12px;color:var(--info-tx);line-height:1.6">
+          <strong>Note :</strong> Les modifications effectuées dans cette session ne sont pas automatiquement sauvegardées dans le fichier sur O:.
+          Pour mettre à jour définitivement la base, exportez les données (JSON) et transmettez-les au gestionnaire administratif.
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal()">Fermer</button></div>
+    </div>
+  </div>`;
+  document.getElementById('modalContainer').innerHTML = modal;
+}
+
+function exportJSON() {
+  const data = JSON.stringify(state.entries, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'kb-dr04-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+}
+
+function importJSON() {
+  const file = document.getElementById('importFile').files[0];
+  if (!file) { alert('Sélectionnez un fichier JSON.'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error('Format invalide');
+      state.entries = data;
+      state.selectedId = null;
+      closeModal();
+      render();
+      alert(`✓ ${data.length} entrées importées.`);
+    } catch(err) { alert('Erreur : fichier JSON invalide.\n' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INTERACTIONS
+// ═══════════════════════════════════════════════════════════════
+function setCategory(cat) { state.category = cat; state.selectedId = null; closeSidebar(); render(); }
+function setType(type)    { state.type = type;     state.selectedId = null; render(); }
+function setStatus(s)     { state.status = s;      state.selectedId = null; render(); }
+function setPerson(p)     { state.person = p;      state.selectedId = null; closeSidebar(); render(); }
+function selectEntry(id)  { state.selectedId = state.selectedId === id ? null : id; render(); }
+function closeDetail()    {
+  state.selectedId = null;
+  const mobileBack = document.getElementById('mobileBack');
+  const contentArea = document.getElementById('contentArea');
+  if (mobileBack) mobileBack.style.display = 'none';
+  if (contentArea) contentArea.classList.remove('detail-open');
+  render();
+}
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
+
+// ── RPG PROFILE ──────────────────────────────────────────────
+function openPersonProfile(name) {
+  const cfg = PERSONS[name] || { color: '#162B44', initials: name.slice(0,2).toUpperCase() };
+  const allEntries = state.entries;
+  const mine = allEntries.filter(e => (e.owner||'').includes(name) || (e.backup||'').includes(name));
+  const validated = mine.filter(e => e.status === 'validated').length;
+  const drafts    = mine.filter(e => e.status === 'draft').length;
+  const clarify   = mine.filter(e => e.status === 'to-clarify').length;
+  const stubs     = mine.filter(e => e.status === 'stub').length;
+  const pct = mine.length ? Math.round((validated / mine.length) * 100) : 0;
+
+  // XP colour per percentage
+  const xpColor = pct >= 80 ? 'var(--ok-bd)' : pct >= 40 ? 'var(--warn-bd)' : 'var(--flag-bd)';
+  const xpLabel = pct >= 80 ? '🏆 Expert' : pct >= 50 ? '⚔️ Confirmé' : pct >= 20 ? '🌱 En progression' : '📋 À documenter';
+
+  // Group entries by category
+  const grouped = {};
+  mine.forEach(e => {
+    const cat = CATEGORIES[e.category]?.label || e.category;
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(e);
+  });
+
+  const statusDot = s => {
+    const c = STATUSES[s]?.color || '#9B9590';
+    return `<span class="rpg-entry-row-status" style="background:${c}"></span>`;
+  };
+
+  const groupsHtml = Object.entries(grouped).map(([cat, entries]) => `
+    <div class="rpg-entry-group">
+      <div class="rpg-group-title">${escH(cat)}</div>
+      ${entries.map(e => `
+        <div class="rpg-entry-row" onclick="closeModal();selectEntry('${e.id}')">
+          ${statusDot(e.status)}
+          <span class="rpg-entry-row-title">${escH(e.title)}</span>
+          <span class="rpg-entry-row-type">${TYPES[e.type]||e.type}</span>
+        </div>`).join('')}
+    </div>`).join('');
+
+  const modal = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="rpg-modal" style="--person-color:${cfg.color}">
+      <div class="rpg-header">
+        <div class="rpg-banner"></div>
+        <div class="rpg-avatar-wrap">
+          <div class="rpg-avatar-lg" style="background:${cfg.color}">${cfg.initials}</div>
+        </div>
+        <div class="rpg-header-info">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between">
+            <div>
+              <div class="rpg-name">${escH(name)}</div>
+              <div class="rpg-role">Secrétaire de direction · DR04 Differdange</div>
+            </div>
+            <button class="detail-close" onclick="closeModal()" style="margin-top:4px">✕</button>
+          </div>
+        </div>
+      </div>
+      <div class="rpg-body">
+        <div class="rpg-stats">
+          <div class="rpg-stat"><div class="rpg-stat-val">${mine.length}</div><div class="rpg-stat-label">Entrées assignées</div></div>
+          <div class="rpg-stat"><div class="rpg-stat-val" style="color:var(--ok-bd)">${validated}</div><div class="rpg-stat-label">Validées</div></div>
+          <div class="rpg-stat"><div class="rpg-stat-val" style="color:var(--warn-bd)">${drafts}</div><div class="rpg-stat-label">Brouillons</div></div>
+          <div class="rpg-stat"><div class="rpg-stat-val" style="color:var(--text-light)">${stubs}</div><div class="rpg-stat-label">À documenter</div></div>
+        </div>
+        <div class="rpg-xp-bar-wrap">
+          <div class="rpg-xp-label"><span>${xpLabel}</span><span style="color:var(--text-muted)">${pct}% documenté</span></div>
+          <div class="rpg-xp-track"><div class="rpg-xp-fill" style="width:${pct}%;background:${xpColor}"></div></div>
+        </div>
+        ${groupsHtml || '<p style="font-size:13px;color:var(--text-muted);padding:8px 0">Aucune entrée assignée.</p>'}
+        <div style="margin-top:16px;text-align:center">
+          <button class="btn btn-primary btn-sm" onclick="closeModal();setPerson('${name}')">Voir toutes les entrées de ${escH(name)}</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('modalContainer').innerHTML = modal;
+}
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  state.search = e.target.value;
+  state.selectedId = null;
+  render();
+});
+
+// Keyboard: Escape closes modals, detail, or sidebar
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('modalContainer').innerHTML) closeModal();
+    else if (state.selectedId) closeDetail();
+    else closeSidebar();
+  }
+});
+
+// Swipe right to open sidebar, swipe left to close
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const sidebar = document.getElementById('sidebar');
+  if (dx > 60 && touchStartX < 30) openSidebar();
+  if (dx < -60 && sidebar.classList.contains('open')) closeSidebar();
+}, { passive: true });
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
