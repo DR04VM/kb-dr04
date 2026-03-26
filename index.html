@@ -1314,6 +1314,8 @@ function renderTeam() {
   }
   document.getElementById('teamList').innerHTML = html;
 }
+
+function renderTypeChips() {
   const types = [['all','Tout'],['procedure','Procédures'],['reference','Références'],['know-how','Notes pratiques'],['stub','À compléter']];
   const classMap = {all:'all',procedure:'',reference:'ref','know-how':'know',stub:'stub'};
   document.getElementById('typeChips').innerHTML = types.map(([t,l]) =>
